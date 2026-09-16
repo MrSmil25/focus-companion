@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LibraryView } from "@/components/library-view";
+import { AcademicPerformance, CoursePerformance } from "@/components/performance";
 
 type View = "home" | "courses" | "calendar" | "tasks" | "library";
 type TaskCategory = "Accounting" | "Marketing" | "Entrepreneurship" | "Research";
