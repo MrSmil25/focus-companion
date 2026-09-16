@@ -273,6 +273,8 @@ function HomeView({ tasks, toggleTask, navigate }: { tasks: Task[]; toggleTask: 
 
         <section><SectionHeader title="Academic progress" /><div className="academic-card p-5"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Semester progress</p><p className="mt-1 font-display text-3xl font-bold">60%</p></div><div className="grid size-16 place-items-center rounded-full border-8 border-accent text-xs font-bold text-academic">60%</div></div><Progress value={60} className="mt-5 h-2" /><div className="mt-5 grid grid-cols-3 gap-2"><Metric label="Completed SKS" value="14" /><Metric label="Courses" value="8" /><Metric label="Tasks left" value={String(openTasks.length)} /></div></div></section></div>
 
+      <SemesterTimeline />
+
       <section><SectionHeader title="Quick actions" /><div className="grid grid-cols-4 gap-2 sm:gap-3">{quickActions.map(({ id, label, icon: Icon }) => <button key={id} onClick={() => navigate(id)} className="academic-card flex min-w-0 flex-col items-center gap-2 px-2 py-4 text-center transition-transform hover:-translate-y-0.5"><span className="grid size-9 place-items-center rounded-xl bg-accent text-academic"><Icon className="size-4" /></span><span className="w-full truncate text-[11px] font-semibold sm:text-xs">{label}</span></button>)}</div></section>
     </div>
   </div>;
