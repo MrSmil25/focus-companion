@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowLeft, BookOpen, CalendarDays, Check, CheckCircle2, ChevronRight, Clock3,
-  Download, ExternalLink, FileText, GraduationCap, Hand, Home, Library, Link2, ListTodo,
-  MapPin, MoreHorizontal, Paperclip, Pencil, Plus, Save, Search, Trash2, UserRound, X,
+  Download, ExternalLink, FileText, Flag, GraduationCap, Hand, Home, Library, Link2, ListTodo,
+  MapPin, Milestone, MoreHorizontal, Paperclip, Pencil, Plus, Save, Search, Trash2, UserRound, X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
