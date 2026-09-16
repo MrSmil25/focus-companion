@@ -11,6 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LibraryView } from "@/components/library-view";
 import { AcademicPerformance, CoursePerformance } from "@/components/performance";
 import { ExamCenter, ExamDetail, type Exam } from "@/components/exam-prep";
+import { AcademicJourney, JourneyCard } from "@/components/academic-journey";
+import type { CurriculumCourse } from "@/data/curriculum";
 
 type View = "home" | "courses" | "calendar" | "tasks" | "library";
 type TaskCategory = "Accounting" | "Marketing" | "Entrepreneurship" | "Research";
@@ -198,8 +200,21 @@ function AcademicApp() {
   const [workspace, setWorkspace] = useState<Course | null>(null);
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [exam, setExam] = useState<Exam | null>(null);
+  const [journey, setJourney] = useState(false);
 
-  const navigate = (next: View) => { setWorkspace(null); setExam(null); setView(next); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const navigate = (next: View) => { setWorkspace(null); setExam(null); setJourney(false); setView(next); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const openCurriculumCourse = (item: CurriculumCourse) => {
+    const existing = courses.find((course) => course.code === item.code);
+    setWorkspace(existing ?? {
+      code: item.code, title: item.name, sks: item.sks,
+      lecturer: "To be announced", assistant: "To be announced",
+      day: "Not scheduled", time: "—", room: "—", accent: "bg-academic",
+      tasks: [], materials: materialSet,
+      notes: [{ id: 1, title: "Course plan", topic: `Semester ${item.semester}`, body: `${item.name} is part of the ${item.group} group in Curriculum 2024 and carries ${item.sks} SKS.` }],
+      events: [{ type: "Lecture", title: "Schedule published after course registration", day: "TBA", time: "—", room: "—" }],
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const toggleTask = (id: number) => setTasks((items) => items.map((task) => task.id === id
     ? { ...task, done: !task.done, status: (!task.done ? "Completed" : "In progress") as TaskStatus }
     : task));
@@ -210,9 +225,9 @@ function AcademicApp() {
     <div className="min-h-screen bg-background pb-24 text-foreground md:pb-8">
       <DesktopHeader view={view} navigate={navigate} />
       <main className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 md:py-8">
-        {exam ? <ExamDetail exam={exam} onBack={() => setExam(null)} /> : workspace ? <CourseWorkspace course={workspace} onBack={() => setWorkspace(null)} /> : (
+        {exam ? <ExamDetail exam={exam} onBack={() => setExam(null)} /> : workspace ? <CourseWorkspace course={workspace} onBack={() => setWorkspace(null)} /> : journey ? <AcademicJourney onBack={() => setJourney(false)} onOpenCourse={openCurriculumCourse} /> : (
           <div key={view} className="page-enter">
-            {view === "home" && <HomeView tasks={tasks} toggleTask={toggleTask} navigate={navigate} onOpenExam={setExam} />}
+            {view === "home" && <HomeView tasks={tasks} toggleTask={toggleTask} navigate={navigate} onOpenExam={setExam} onOpenJourney={() => { setJourney(true); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
             {view === "courses" && <CoursesView onOpen={setWorkspace} />}
             {view === "calendar" && <CalendarView />}
             {view === "tasks" && <TasksView tasks={tasks} toggleTask={toggleTask} updateTask={updateTask} addTask={addTask} navigate={navigate} />}
@@ -220,7 +235,7 @@ function AcademicApp() {
           </div>
         )}
       </main>
-      {!workspace && !exam && <BottomNav view={view} navigate={navigate} />}
+      {!workspace && !exam && !journey && <BottomNav view={view} navigate={navigate} />}
     </div>
   );
 }
@@ -247,7 +262,7 @@ function MobileTop({ eyebrow, title, action }: { eyebrow: string; title: React.R
 
 function SectionHeader({ title, action }: { title: string; action?: React.ReactNode }) { return <div className="mb-3 flex items-center justify-between gap-3"><h2 className="text-base font-bold md:text-lg">{title}</h2>{action}</div>; }
 
-function HomeView({ tasks, toggleTask, navigate, onOpenExam }: { tasks: Task[]; toggleTask: (id: number) => void; navigate: (view: View) => void; onOpenExam: (exam: Exam) => void }) {
+function HomeView({ tasks, toggleTask, navigate, onOpenExam, onOpenJourney }: { tasks: Task[]; toggleTask: (id: number) => void; navigate: (view: View) => void; onOpenExam: (exam: Exam) => void; onOpenJourney: () => void }) {
   const openTasks = tasks.filter((task) => !task.done);
   const featuredTask = openTasks[0];
   const quickActions = navItems.filter((item) => item.id !== "home");
@@ -277,6 +292,8 @@ function HomeView({ tasks, toggleTask, navigate, onOpenExam }: { tasks: Task[]; 
         <section><SectionHeader title="Academic progress" /><div className="academic-card p-5"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Semester progress</p><p className="mt-1 font-display text-3xl font-bold">60%</p></div><div className="grid size-16 place-items-center rounded-full border-8 border-accent text-xs font-bold text-academic">60%</div></div><Progress value={60} className="mt-5 h-2" /><div className="mt-5 grid grid-cols-3 gap-2"><Metric label="Completed SKS" value="14" /><Metric label="Courses" value="8" /><Metric label="Tasks left" value={String(openTasks.length)} /></div></div></section></div>
 
       <SemesterTimeline />
+
+      <JourneyCard onOpen={onOpenJourney} />
 
       <ExamCenter onOpen={onOpenExam} />
 
