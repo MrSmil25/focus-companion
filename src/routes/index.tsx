@@ -225,9 +225,9 @@ function AcademicApp() {
     <div className="min-h-screen bg-background pb-24 text-foreground md:pb-8">
       <DesktopHeader view={view} navigate={navigate} />
       <main className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 md:py-8">
-        {exam ? <ExamDetail exam={exam} onBack={() => setExam(null)} /> : workspace ? <CourseWorkspace course={workspace} onBack={() => setWorkspace(null)} /> : (
+        {exam ? <ExamDetail exam={exam} onBack={() => setExam(null)} /> : workspace ? <CourseWorkspace course={workspace} onBack={() => setWorkspace(null)} /> : journey ? <AcademicJourney onBack={() => setJourney(false)} onOpenCourse={openCurriculumCourse} /> : (
           <div key={view} className="page-enter">
-            {view === "home" && <HomeView tasks={tasks} toggleTask={toggleTask} navigate={navigate} onOpenExam={setExam} />}
+            {view === "home" && <HomeView tasks={tasks} toggleTask={toggleTask} navigate={navigate} onOpenExam={setExam} onOpenJourney={() => { setJourney(true); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
             {view === "courses" && <CoursesView onOpen={setWorkspace} />}
             {view === "calendar" && <CalendarView />}
             {view === "tasks" && <TasksView tasks={tasks} toggleTask={toggleTask} updateTask={updateTask} addTask={addTask} navigate={navigate} />}
@@ -235,7 +235,7 @@ function AcademicApp() {
           </div>
         )}
       </main>
-      {!workspace && !exam && <BottomNav view={view} navigate={navigate} />}
+      {!workspace && !exam && !journey && <BottomNav view={view} navigate={navigate} />}
     </div>
   );
 }
