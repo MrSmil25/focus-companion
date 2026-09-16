@@ -276,6 +276,8 @@ function HomeView({ tasks, toggleTask, navigate }: { tasks: Task[]; toggleTask: 
 
       <SemesterTimeline />
 
+      <AcademicPerformance />
+
       <section><SectionHeader title="Quick actions" /><div className="grid grid-cols-4 gap-2 sm:gap-3">{quickActions.map(({ id, label, icon: Icon }) => <button key={id} onClick={() => navigate(id)} className="academic-card flex min-w-0 flex-col items-center gap-2 px-2 py-4 text-center transition-transform hover:-translate-y-0.5"><span className="grid size-9 place-items-center rounded-xl bg-accent text-academic"><Icon className="size-4" /></span><span className="w-full truncate text-[11px] font-semibold sm:text-xs">{label}</span></button>)}</div></section>
     </div>
   </div>;
