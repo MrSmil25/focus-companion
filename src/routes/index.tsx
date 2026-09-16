@@ -10,7 +10,8 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LibraryView } from "@/components/library-view";
 import { AcademicPerformance, CoursePerformance } from "@/components/performance";
-import { ExamCenter, ExamDetail, type Exam } from "@/components/exam-prep";
+import { ExamCenter, type Exam } from "@/components/exam-prep";
+import { AcademicEventCard, StudyCommandCenter, initialStudySessions, type PlannedSession } from "@/components/study-command-center";
 import { AcademicJourney, JourneyCard } from "@/components/academic-journey";
 import type { CurriculumCourse } from "@/data/curriculum";
 
