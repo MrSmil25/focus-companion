@@ -84,7 +84,7 @@ function SectionHeader({ title, action }: { title: string; action?: React.ReactN
 }
 
 export function ExamCenter({ onOpen }: { onOpen: (exam: Exam) => void }) {
-  const nearest = exams[0];
+  const nearest = exams[0]!;
   return (
     <section>
       <SectionHeader title="Exam center" action={<span className="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-academic">{exams.length} upcoming exams</span>} />
