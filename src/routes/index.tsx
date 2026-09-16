@@ -280,6 +280,90 @@ function HomeView({ tasks, toggleTask, navigate }: { tasks: Task[]; toggleTask: 
   </div>;
 }
 
+const SEMESTER_WEEKS = 16;
+const CURRENT_WEEK = 5;
+const SEMESTER_PROGRESS = 35;
+
+type AcademicMilestone = { id: number; title: string; date: string; course: string; week: number };
+
+const academicMilestones: AcademicMilestone[] = [
+  { id: 1, title: "UTS — Ujian Tengah Semester", date: "12 October", course: "All courses", week: 7 },
+  { id: 2, title: "Project Presentation", date: "20 October", course: "Metode Riset Bisnis", week: 8 },
+  { id: 3, title: "Final Exam — UAS", date: "15 December", course: "All courses", week: 16 },
+];
+
+function SemesterTimeline() {
+  const weeks = Array.from({ length: SEMESTER_WEEKS }, (_, index) => index + 1);
+  const milestoneByWeek = new Map(academicMilestones.map(milestone => [milestone.week, milestone]));
+
+  return (
+    <section>
+      <SectionHeader title="Semester timeline" action={<span className="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-academic">Week {CURRENT_WEEK} of {SEMESTER_WEEKS}</span>} />
+      <div className="academic-card p-5 md:p-6">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)] lg:items-start">
+          <div>
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-xs text-muted-foreground">Current semester</p>
+                <h3 className="mt-1 text-lg font-bold">Semester Gasal 2026/2027</h3>
+              </div>
+              <p className="font-display text-2xl font-bold text-academic">{SEMESTER_PROGRESS}%</p>
+            </div>
+            <Progress value={SEMESTER_PROGRESS} className="mt-4 h-2" />
+            <p className="mt-2 text-xs text-muted-foreground">{SEMESTER_PROGRESS}% completed · week {CURRENT_WEEK} of {SEMESTER_WEEKS}</p>
+
+            <div className="mt-6">
+              <div className="grid grid-cols-8 gap-1 sm:grid-cols-16">
+                {weeks.map(week => {
+                  const isPast = week < CURRENT_WEEK;
+                  const isCurrent = week === CURRENT_WEEK;
+                  const milestone = milestoneByWeek.get(week);
+                  return (
+                    <div key={week} className="group relative">
+                      <div
+                        title={`Week ${week}${milestone ? ` — ${milestone.title}` : ""}`}
+                        className={`h-8 rounded-md border transition-colors ${isPast ? "border-academic bg-academic" : isCurrent ? "border-primary bg-primary shadow-[0_0_0_3px] shadow-primary/30" : "border-input bg-muted"} ${milestone && !isPast && !isCurrent ? "border-academic/50" : ""}`}
+                      />
+                      {milestone && <span className={`absolute -top-1.5 right-0 size-2 rounded-full ${isPast ? "bg-warning" : "bg-academic"}`} />}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-2 flex items-center justify-between text-[10px] font-medium text-muted-foreground">
+                <span>Week 1</span>
+                <span className="flex items-center gap-1 font-bold text-academic"><Flag className="size-3 text-warning" />You are here — Week {CURRENT_WEEK}</span>
+                <span>Week {SEMESTER_WEEKS}</span>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-4 text-[10px] font-medium text-muted-foreground">
+                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-academic" />Completed weeks</span>
+                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-primary" />Current week</span>
+                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-muted ring-1 ring-input" />Upcoming</span>
+                <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-academic" />Milestone</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3 border-t border-border pt-5 lg:border-t-0 lg:border-l lg:pl-5 lg:pt-0">
+            <p className="flex items-center gap-2 text-xs font-semibold uppercase text-muted-foreground"><Milestone className="size-4 text-academic" />Upcoming milestones</p>
+            {academicMilestones.filter(milestone => milestone.week >= CURRENT_WEEK).map(milestone => (
+              <article key={milestone.id} className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 rounded-xl bg-muted p-3.5">
+                <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-accent text-academic"><Flag className="size-4" /></div>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h4 className="truncate text-sm font-bold">{milestone.title}</h4>
+                    <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-academic">{milestone.date}</span>
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">{milestone.course} · Week {milestone.week}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function DashboardStat({ label, value }: { label: string; value: string }) { return <div className="min-w-0 rounded-xl bg-academic-foreground/10 p-3"><p className="truncate text-[9px] opacity-70">{label}</p><p className="mt-1 truncate text-xs font-bold">{value}</p></div>; }
 
 function Metric({ label, value }: { label: string; value: string }) { return <div className="rounded-xl bg-muted p-3"><p className="text-xs text-muted-foreground">{label}</p><p className="mt-1 text-sm font-bold">{value}</p></div>; }
